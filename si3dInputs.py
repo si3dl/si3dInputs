@@ -1,6 +1,6 @@
 # si3dInputs.py
-# This script serves to create the files needed for the SI3D model runs. The code is based on previous matlab versions created by Alicia Cortes, and Francisco Rueda.
-# Functions that are presentin within this script
+# This script serves to create the files needed for the SI3D model runs. The code is based on previous matlab versions created by Alicia Cortes and Francisco Rueda.
+# Functions that are present within this script are:
 # 1. bathy4si3d
     # This function writes the bathymetry file 'h' for si3d simulations. The code considers canonical and real basins. The use of this function is found next for each of the basins considered:
     # if the basin is a real lake use the functions as: bathy4si3d(BasinType,SimName,dx,xg,yg,zg)
@@ -22,11 +22,18 @@
 # 3. LayerGenerator
     # This function writes the layer file for the initial conditions 'si3d_layer.txt' for si3d simulations. The code is only used when the option of variable thickness of layers is toggled. This function writes the number of layers and the depth at each layer, which is needed when ibathyf < 0
 
-# 4. Surfbc4si3d_Preprocess
+# 4. Surfbc4si3d
+    # This function writes the surface boundary condition file 'surfbc.txt' for si3d simulations. The code includes 3 different methods to input forcing conditions that are coherent with si3d capabilities. 1) The heat budget is estimated among 3 different possibilities. The resulting net heat source is saved within the file along with other atmospheric conditions like wind speed, air temperature, atmospheric pressure, eta and others. 2) Using the shortwave date from site and uses cloud cover to obtain the needed parameters to run a heatbudget model built within si3d. 3) Uses the same input parameters are 2) with the difference that the longwave incoming radiation is used rather than the approximation used by using cloud cover estimations.
+    # The proper use of this function is shown next for each of the 3 possibilities:
+    # 1) surfbc4si3d(LakeName,surfbcType,days,hr,mins,year,dt,PathSave,HeatBudgetMethod,eta,Hswn,Hlwin,Hlwout,Ta,Pa,RH,Cl,cw,u,v,WaTemp,Pa_P,esMethod)
+    # 2) surfbc4si3d(LakeName,surfbcType,days,hr,mins,year,dt,PathSave,eta,Hswn,Ta,Pa,RH,Cl,cw,u,v)
+    # 3) surfbc4si3d(LakeName,surfbcType,days,hr,mins,year,dt,PathSave,eta,Hswn,Ta,Pa,RH,Hlwin,cw,u,v)
+    # Where the definition of the variables is:
+    # u,v horizontal wind velocity components.
+    # Ta stands for air temperature, Pa for atmospheric pressure, RH relative humidity, eta the light penetration coefficient (secchi depth dependent), CL is cloud cover, WaTemp is the surface water temperature.
+    # Pa_P is the ratio of the atmospheric pressute at site in comparison to sea pressure, Hswn is the net shortwave radiation, Hlwin and HLwout stand for the incoming and outgoing longwave radiation. Finally, cw stands for wind drag coefficient.
 
-# 5. Surfbc4si3d_RunTime
-
-# 5. surfbc4si3d_SeveralStat
+# For a better understanding on the use of these functions, the reader is directed to the corresponding repositories that make use of the functions in here. "surfBondCond.py", InitConditions.py", and ""bathymetry.py" 
 
 # Copy right Sergio A. Valbuena 2021
 # UC Davis - TERC
