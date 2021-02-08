@@ -33,7 +33,7 @@
     # Ta stands for air temperature, Pa for atmospheric pressure, RH relative humidity, eta the light penetration coefficient (secchi depth dependent), CL is cloud cover, WaTemp is the surface water temperature.
     # Pa_P is the ratio of the atmospheric pressute at site in comparison to sea pressure, Hswn is the net shortwave radiation, Hlwin and HLwout stand for the incoming and outgoing longwave radiation. Finally, cw stands for wind drag coefficient.
 
-# For a better understanding on the use of these functions, the reader is directed to the corresponding repositories that make use of the functions in here. "surfBondCond.py", InitConditions.py", and ""bathymetry.py" 
+# For a better understanding on the use of these functions, the reader is directed to the corresponding repositories that make use of the functions in here. "surfBondCond.py", InitConditions.py", and ""bathymetry.py"
 
 # Copy right Sergio A. Valbuena 2021
 # UC Davis - TERC
@@ -128,6 +128,8 @@ def initCond4si3d(LakeName,SimStartDate,DeltaZ,TempProf,PathSave,NTracers,*args)
             z = np.arange(0+dz/2,H+dz,dz)
             T = np.interp(z,z_CTD,T_CTD)
             z *= -1
+            plt.plot(T,z)
+            plt.show()
             dummy2 = 'Source: From CTD_Profile                         - '
         dummy1 = 'Depths (m) not used   Temp (oC)                  - '
     elif DeltaZ == 'variable':
