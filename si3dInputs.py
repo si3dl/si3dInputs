@@ -9,7 +9,7 @@
     # if the basin is spherical use the functions as: bathy4si3d(BasinType,SimName,dx,D,H)
     # if the basin is cylindrical use the functions as: bathy4si3d(BasinType,SimName,dx,D,H)
     # Where L,B,H are the dimensions of length, width, and depth for the rectangular basin. D,H are the diameter and depth respectively for the cylindrical and spherical basins.
-    # The file name will have the description of the grid size dx and the type of basin. This is for referencing but the user must change this name to 'h' to be able to run simulations in Si3D
+    # The file name will have the description of the grid size dx and the type of basin. This is for referencing but the user must change this name to 'h' to be able to run simulations in Si3D model
 # 2. initCond4si3d
     # This function writes the initial condition file 'si3d_init.txt' for si3d simulations. The code considers constant and variable thickness layers, and the same for the temperature profiles. The use of the function is shown next for each of the scenarios. (4)
     # Constant thickness and constant Temperature initCond4si3d(LakeName,SimStartDate,DeltaZ,TempProf,PathSave,NTracers,H,dz,Tc)
