@@ -17,7 +17,7 @@
     # Variable thickness and constant Tempretaure initCond4si3d(LakeName,SimStartDate,DeltaZ,TempProf,PathSave,NTracers,H,dz,Tc,spacingMethod,dz0s,dz0b,dzxs,dzxb)
     # Variable thickness and variable temperature profile initCond4si3d(LakeName,SimStartDate,DeltaZ,TempProf,PathSave,NTracers,H,dz,z_CTD,T_CTD,spacingMethod,dz0s,dz0b,dzxs,dzxb)
 
-    # NOTE: PLEASE keep in mind that for the use of variable temperature profile, the CTD information must cover the whole lake depth. In case the CTD profile is incomplete (z_CTD[-1] < H) then it must be rearranged prior to using this function.
+    # NOTE PLEASE keep in mind that for the use of variable temperature profile, the CTD information must cover the whole lake depth. In case the CTD profile is incomplete (z_CTD[-1] < H) then it must be rearranged prior to using this function.
 
 # 3. LayerGenerator
     # This function writes the layer file for the initial conditions 'si3d_layer.txt' for si3d simulations. The code is only used when the option of variable thickness of layers is toggled. This function writes the number of layers and the depth at each layer, which is needed when ibathyf < 0
