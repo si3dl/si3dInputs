@@ -287,6 +287,29 @@ def LayerGenerator(zlevel,kml,PathSave):
     print(Layer)
     return Layer
 
+def surfbcW4si3d(caseStudy,Time,dt,PathSave,cw,u,v):
+    os.chdir(PathSave)
+    r = len(Time)
+    days = Time
+    daystart = Time[0]
+
+    fid = open('surfbcW.txt','wt+')
+    fid.write('%s\n' % 'Surface boundary condition file for si3d model')
+    fid.write('%s' % caseStudy+' simulations \n')
+    fid.write('%s' % 'Time is given in hours from the start date used within the input.txt \n')
+    fid.write('%s\n' %'   Time in   // Data format is (10X,G11.2,...) Time cw ua va')
+    fid.write('%s' % '   ' + str(dt) + '-min    // SOURCE = ' + caseStudy + ' Met Data \n')
+    fid.write('%s' % ' intervals  (Note : file prepared on ' + str(Dt.date.today())+'\n')
+    fid.write('%s' % '   npts = '+ str(r)+'\n')
+    for i in range(0,r):
+        a0 = (days[i] - daystart)*24
+        a1= cw[i];   	# **** Wind drag coefficient
+        a2= u[i]; 		# **** Wind speed in the EW direction
+        a3= v[i]; 		# **** Wind speed in the NS direction
+        format = '%10.4f %10.4f %10.4f %10.4f \n'
+        fid.write(format % (a0,a1,a2,a3))
+
+    return
 # Function to create surface boundary condition using a heat budget method
 # This function preprocess the meteorological parameters and creater a surfbc.txt file for the numerical simulations of si3d. The file has the inputs for the heatbudget method chosen.
 def surfbc4si3d(LakeName,surfbcType,days,hr,mins,year,dt,PathSave,*args):
