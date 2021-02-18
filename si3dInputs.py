@@ -128,6 +128,7 @@ def initCond4si3d(LakeName,SimStartDate,DeltaZ,TempProf,PathSave,NTracers,*args)
             z = np.arange(0+dz/2,H+dz,dz)
             T = np.interp(z,z_CTD,T_CTD)
             z *= -1
+            plt.figure()
             plt.plot(T,z)
             plt.show()
             dummy2 = 'Source: From CTD_Profile                         - '
@@ -290,7 +291,7 @@ def LayerGenerator(zlevel,kml,PathSave):
 def surfbcW4si3d(caseStudy,Time,dt,PathSave,cw,u,v):
     os.chdir(PathSave)
     r = len(Time)
-    days = Time
+    days = Time/24
     daystart = Time[0]
 
     fid = open('surfbcW.txt','wt+')
