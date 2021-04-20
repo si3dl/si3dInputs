@@ -86,7 +86,7 @@ def bathy4si3d(BasinType,SimName,dx,PathSave,*args):
 
     os.chdir(PathSave)
     ny,nx = np.shape(Z)
-    filename = 'h'+str(dx)+basin
+    filename = 'h'+str(int(dx))+basin
     fid = open(filename,"w+")
     fid.write("%s" % Entry+'   imx =  '+str(nx)+',jmx =  '+str(ny)+',ncols = '+str(nx))
     fid.write("\n")
@@ -110,7 +110,7 @@ def bathy4si3d(BasinType,SimName,dx,PathSave,*args):
     return X, Y, Z
 
 # -------------- Function to create the initial condition file ------------------
-def initCond4si3d(LakeName,SimStartDate,DeltaZ,TempProf,PathSave,NTracers,*args):
+def initCond4si3d(show,LakeName,SimStartDate,DeltaZ,TempProf,PathSave,NTracers,*args):
     if DeltaZ == 'constant':
         if TempProf == 'constant':
             H = args[0]
@@ -130,7 +130,8 @@ def initCond4si3d(LakeName,SimStartDate,DeltaZ,TempProf,PathSave,NTracers,*args)
             z *= -1
             plt.figure()
             plt.plot(T,z)
-            plt.show()
+            if show == True:
+                plt.show()
             dummy2 = 'Source: From CTD_Profile                         - '
         dummy1 = 'Depths (m) not used   Temp (oC)                  - '
     elif DeltaZ == 'variable':
@@ -309,11 +310,10 @@ def surfbcW4si3d(caseStudy,Time,dt,PathSave,cw,u,v):
         a3= v[i]; 		# **** Wind speed in the NS direction
         format = '%10.4f %10.4f %10.4f %10.4f \n'
         fid.write(format % (a0,a1,a2,a3))
-
     return
 # Function to create surface boundary condition using a heat budget method
 # This function preprocess the meteorological parameters and creater a surfbc.txt file for the numerical simulations of si3d. The file has the inputs for the heatbudget method chosen.
-def surfbc4si3d(LakeName,surfbcType,days,hr,mins,year,dt,PathSave,*args):
+def surfbc4si3d(show,LakeName,surfbcType,days,hr,mins,year,dt,PathSave,*args):
     os.chdir(PathSave)
     r = len(days)
     daystart = days[0]
@@ -469,4 +469,6 @@ def surfbc4si3d(LakeName,surfbcType,days,hr,mins,year,dt,PathSave,*args):
         ax8.set_xlabel('day of year')
         plt.tight_layout()
     fid.close()
-    plt.show()
+
+    if show == True:
+        plt.show()
