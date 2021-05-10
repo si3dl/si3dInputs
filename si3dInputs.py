@@ -80,23 +80,25 @@ def bathy4si3d(BasinType,SimName,dx,PathSave,*args):
         Z = z
         del x, y, z
     elif BasinType == 3:
+        basin = 'circular'
         R = args[0]/2
         H = args[1]
-        x = np.arange(dx,2*R+dx,dx)
-        y = np.arange(dx,2*R+dx,dx)
+        x = np.arange(0,2*R+2*dx,dx)
+        y = np.arange(0,2*R+2*dx,dx)
         X,Y = np.meshgrid(x,y)
         z = np.empty((len(x),len(y)))
         C = H/(R)
         for i in range(len(x)):
             for j in range(len(x)):
-                z[i,j] = C*(((R)**2 - (x[i]-R)**2 - (y[j]-R)**2))**(1/2)
-        z[:,-1] = np.nan
-        z[:,-1] = np.nan
-
-        Z = z*(10)
+                A = (R)**2 - (x[i]-R)**2 - (y[j]-R)**2
+                if A < 0:
+                    z[i,j] = np.nan
+                else:
+                    z[i,j] = C*(A)**(1/2)
+        Z = z[0:-1,0:-1]
+        Z = Z*(10)
         idata = np.isnan(Z)
         Z[idata] = -99
-        print(x[-1])
     else:
         H = 1
 
