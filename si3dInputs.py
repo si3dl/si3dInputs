@@ -128,7 +128,7 @@ def bathy4si3d(BasinType,SimName,dx,PathSave,*args):
     return X, Y, Z
 
 # -------------- Function to create the initial condition file ------------------
-def initCond4si3d(show,LakeName,SimStartDate,DeltaZ,TempProf,PathSave,NTracers,*args):
+def initCond4si3d(LakeName,SimStartDate,DeltaZ,TempProf,PathSave,NTracers,*args):
     if DeltaZ == 'constant':
         if TempProf == 'constant':
             H = args[0]
@@ -146,10 +146,6 @@ def initCond4si3d(show,LakeName,SimStartDate,DeltaZ,TempProf,PathSave,NTracers,*
             z = np.arange(0+dz/2,H+dz,dz)
             T = np.interp(z,z_CTD,T_CTD)
             z *= -1
-            plt.figure()
-            plt.plot(T,z)
-            if show == True:
-                plt.show()
             dummy2 = 'Source: From CTD_Profile                         - '
         dummy1 = 'Depths (m) not used   Temp (oC)                  - '
     elif DeltaZ == 'variable':
@@ -300,7 +296,6 @@ def LayerGenerator(zlevel,kml,PathSave):
     fid.write('%s' %'   km1   =        '+str(kml+1)+'\n')
     for i in range(0,kml+1):
         fid.write('%10.2f %10.4f \n' % (i+1,zlevel[i]))
-
 
     fid.close()
     Layer = 'Layer file created in the folder' + PathSave + ' with name si3d_layer.txt'
@@ -487,6 +482,3 @@ def surfbc4si3d(show,LakeName,surfbcType,days,hr,mins,year,dt,PathSave,*args):
         ax8.set_xlabel('day of year')
         plt.tight_layout()
     fid.close()
-
-    if show == True:
-        plt.show()
