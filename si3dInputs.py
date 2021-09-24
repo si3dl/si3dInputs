@@ -161,6 +161,8 @@ def initCond4si3d(LakeName,SimStartDate,DeltaZ,TempProf,PathSave,NTracers,*args)
             dzxs = args[5]
             dzxb = args[6]
             n = args[7]
+            Hn = args[8]
+            dzc = args[9]
             if spacingMethod == 'exp':
                 gridDZ = dz0s * dzxs**gridks
                 gridZ = np.cumsum(gridDZ)
@@ -197,6 +199,30 @@ def initCond4si3d(LakeName,SimStartDate,DeltaZ,TempProf,PathSave,NTracers,*args)
                 zz[0] = 0
                 zi = -(zz[0:-1] + zz[1:])/2
                 z = zi
+            elif spacingMethod == 'surfvarBotconsta':
+                gridkb = np.arange(1,N+1,1)
+                gridDZs = dz0s * dzxs**gridks
+                gridZs = np.cumsum(gridDZs)
+                idepths = gridZs <= Hn
+                gridZss = gridZs[idepths]
+                Href = gridZss[-1]
+                gridZb = np.arange(Href+dzc,H+dzc,dzc)
+                if gridZb[-1] > H:
+                    gridZbb = gridZb
+                    gridZbb[-1] = H
+                else:
+                    gridZbb = np.concatenate((gridZb,H))
+                gridZ = np.concatenate((gridZss,gridZbb))
+                gridZ = np.round(gridZ,2)
+                km = len(gridZ)
+                kml = km + 2
+                surf = np.array([-100,-100])
+                zlevel = np.concatenate((surf,gridZ))
+                Layer = LayerGenerator(zlevel,kml,PathSave)
+                zz = zlevel[1:]
+                zz[0] = 0
+                zi = -(zz[0:-1] + zz[1:])/2
+                z = zi
             T = Tc*np.ones(len(z))
             dummy2 = 'Source: From constant values                     - '
         elif TempProf == 'variable':
@@ -209,6 +235,8 @@ def initCond4si3d(LakeName,SimStartDate,DeltaZ,TempProf,PathSave,NTracers,*args)
             dzxs = args[6]
             dzxb = args[7]
             n = args[8]
+            Hn = args[9]
+            dzc = args[10]
             if spacingMethod == 'exp':
                 gridDZ = dz0s * dzxs**gridks
                 gridZ = np.cumsum(gridDZ)
@@ -236,6 +264,34 @@ def initCond4si3d(LakeName,SimStartDate,DeltaZ,TempProf,PathSave,NTracers,*args)
                 gridZss = gridZs[idepths]
                 gridZbb = sorted(gridZbb)
                 gridZ = np.concatenate((gridZss, gridZbb))
+                km = len(gridZ)
+                kml = km + 2
+                surf = np.array([-100,-100])
+                zlevel = np.concatenate((surf,gridZ))
+                Layer = LayerGenerator(zlevel,kml,PathSave)
+                zz = zlevel[1:]
+                zz[0] = 0
+                zi = -(zz[0:-1] + zz[1:])/2
+                z = zi
+            elif spacingMethod == 'surfvarBotconsta':
+                gridkb = np.arange(1,N+1,1)
+                gridDZs = dz0s * dzxs**gridks
+                gridZs = np.cumsum(gridDZs)
+                gridDZb = dz0b * dzxb**gridkb
+                gridZb = np.zeros(len(gridDZb)+1)
+                gridZb[0] = H
+                gridZb[1:] = H - np.cumsum(gridDZb)
+                idepths = gridZs <= Hn
+                gridZss = gridZs[idepths]
+                Href = gridZss[-1]
+                gridZb = np.arange(Href+dzc,H+dzc,dzc)
+                if gridZb[-1] > H:
+                    gridZbb = gridZb
+                    gridZbb[-1] = H
+                else:
+                    gridZbb = np.concatenate((gridZb,H))
+                gridZ = np.concatenate((gridZss,gridZbb))
+                gridZ = np.round(gridZ,2)
                 km = len(gridZ)
                 kml = km + 2
                 surf = np.array([-100,-100])
@@ -293,8 +349,8 @@ def LayerGenerator(zlevel,kml,PathSave):
     fid.write('%s\n' % 'Depths to top of layers in Si3D Grid            ')
     fid.write('%s\n' % '** used if ibathyf in si3d_inp.txt is set to < 0       ')
     fid.write('%s\n' % '------------------------------------------------------ ')
-    fid.write('%s' %'   km1   =        '+str(kml+1)+'\n')
-    for i in range(0,kml+1):
+    fid.write('%s' %'   km1   =        '+str(kml)+'\n')
+    for i in range(0,kml):
         fid.write('%10.2f %10.4f \n' % (i+1,zlevel[i]))
 
     fid.close()
@@ -372,8 +428,8 @@ def surfbc4si3d(show,LakeName,surfbcType,days,hr,mins,year,dt,PathSave,*args):
             # Longwave radiation
             Hlwn = Hlwin - Hlwout
             # Latent Heat Flux (Negative as it exits)
-            fwind = 1.02e-9*(u^2+v^2)**0.5
-            Hl = -rho * Lw * fwind * (es-ea)
+            fwind = 1.02e-9*(u**2+v**2)**0.5
+            Hl = -rho0 * Lw * fwind * (es-ea)
             # Sensible heat flux (negative due to consideration of difference between water temp and air temp)
             Hs = -rho0 * Lw * fwind * CbPa_P * (WaTemp - Ta)
             # Net Heat Flux
@@ -481,4 +537,42 @@ def surfbc4si3d(show,LakeName,surfbcType,days,hr,mins,year,dt,PathSave,*args):
         ax8.set_ylabel(r'$Wind\ Drag$')
         ax8.set_xlabel('day of year')
         plt.tight_layout()
+        if show == True:
+            plt.show()
+        else:
+            print('No plot')
+
     fid.close()
+
+def HeatBudget(HeatBudgetMethod,eta,Hswn,Hlwin,Hlwout,Ta,Pa,RH,Cl,cw,u,v,WaTemp,cChapra,esMethod):
+    if HeatBudgetMethod == 'Chapra1995':
+        rho0 = 997
+        Lv = 2.5e6
+        CbPa_P = 0.61*cChapra
+        wspd = (u**2+v**2)**0.5
+        # Vapor Pressure
+        if esMethod == 1:
+            es = 6.11 * np.exp(17.3 * Ta/(Ta + 237.3))
+        elif esMethod == 2:
+            es = 6.11 * np.exp(7.5 * Ta /(Ta + 237.3))
+        elif esMethod == 3:
+            es3 = 10**(9.286-(2322.38/(Ta+273.15)))
+        ea = es*RH
+        # Longwave radiation
+        Hlwn = Hlwin - Hlwout
+        # Latent Heat Flux (Negative as it exits)
+        fwind = 1.02e-9*wspd
+        Hl = -rho0 * Lv * fwind * (es-ea)
+        # Sensible heat flux (negative due to consideration of difference between water temp and air temp)
+        Hs = -rho0 * Lv * fwind * CbPa_P * (WaTemp - Ta)
+        # Net Heat Flux
+        Hn = Hswn + Hlwn + Hs + Hl
+    elif HeatBudgetMethod == 'AirSea':
+        print('UNDER DEVELOPMENT, THIS FUNCTION DOES NOT WORK')
+        print('The file has not been created')
+        exit()
+    elif HeatBudgetMethod == 'TERC':
+        print('UNDER DEVELOPMENT, THIS FUNCTION DOES NOT WORK')
+        print('The file has not been created')
+        exit()
+    return Hswn,Hlwn,Hl,Hs,Hn
