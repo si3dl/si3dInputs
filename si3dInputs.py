@@ -410,6 +410,7 @@ def surfbc4si3d(show,LakeName,surfbcType,days,hr,mins,year,dt,PathSave,*args):
         u = args[10]
         v = args[11]
         WaTemp = args[12]
+        TimeSim = args[13]
 
         if HeatBudgetMethod == 'Chapra1995':
             rho0 = 1000
@@ -466,6 +467,7 @@ def surfbc4si3d(show,LakeName,surfbcType,days,hr,mins,year,dt,PathSave,*args):
         cw = args[6]
         u = args[7]
         v = args[8]
+        TimeSim = args[9]
         for i in range(0,r):
             a0 = (days[i] - daystart)*24
             a1= eta[i] 		# light attenuation coefficient
@@ -482,6 +484,34 @@ def surfbc4si3d(show,LakeName,surfbcType,days,hr,mins,year,dt,PathSave,*args):
             else:
                 format = '%10.4f %10.4f %10.4f %10.4f %10.4f %10.4f %10.4f %10.4f %10.4f %10.4f \n'
             fid.write(format % (a0,a1,a2,a3,a4,a5,a6,a7,a8,a9))
+        fig1, (ax1,ax2,ax3,ax4) = plt.subplots(nrows=4,ncols=1)
+        fig2, (ax5,ax6,ax7,ax8) = plt.subplots(nrows=4,ncols=1)
+        fig1.set_size_inches(6,8)
+        fig2.set_size_inches(6,8)
+        ax1.plot(TimeSim,eta)
+        ax2.plot(TimeSim,Hswn)
+        ax3.plot(TimeSim,Cl)
+        ax4.plot(TimeSim,(u**2+v**2)**0.5)
+        ax5.plot(TimeSim,Ta)
+        ax6.plot(TimeSim,Pa)
+        ax7.plot(TimeSim,RH)
+        ax8.plot(TimeSim,cw)
+
+        ax1.set_ylabel(r'$eta$')
+        plt.tight_layout()
+        ax2.set_ylabel(r'$Hswn\ [Wm^{-2}]$')
+        ax3.set_ylabel(r'$Cloud Cover$')
+        ax4.set_ylabel(r'$Wspd\ [ms^{-1}]$')
+        ax5.set_ylabel(r'$Ta\ [^{\circ}C]$')
+        ax6.set_ylabel(r'$Atm\ P\ [Pa]$')
+        ax7.set_ylabel(r'$RH$')
+        ax8.set_ylabel(r'$Wind\ Drag$')
+        ax8.set_xlabel('day of year')
+        plt.tight_layout()    
+        if show == True:
+            plt.show()
+        else:
+            print('No plot')
     elif surfbcType == 'RunTime2':
         fid.write('%s\n' %'   Time in   // Data format is (10X,G11.2,...) Time attc Hsw Ta Pa hr Hlw cw ua va')
         fid.write('%s' % '   ' + str(dt) + '-min    // SOURCE = ' + LakeName + ' Met Data ' + str(year) + '\n')
@@ -496,6 +526,7 @@ def surfbc4si3d(show,LakeName,surfbcType,days,hr,mins,year,dt,PathSave,*args):
         cw = args[6]
         u = args[7]
         v = args[8]
+        TimeSim = args[9]
         for i in range(0,r):
             a0 = (days[i] - daystart)*24
             a1= eta[i] 		# light attenuation coefficient
@@ -517,14 +548,14 @@ def surfbc4si3d(show,LakeName,surfbcType,days,hr,mins,year,dt,PathSave,*args):
         fig2, (ax5,ax6,ax7,ax8) = plt.subplots(nrows=4,ncols=1)
         fig1.set_size_inches(6,8)
         fig2.set_size_inches(6,8)
-        ax1.plot(days,eta)
-        ax2.plot(days,Hswn)
-        ax3.plot(days,Hlwin)
-        ax4.plot(days,(u**2+v**2)**0.5)
-        ax5.plot(days,Ta)
-        ax6.plot(days,Pa)
-        ax7.plot(days,RH)
-        ax8.plot(days,cw)
+        ax1.plot(TimeSim,eta)
+        ax2.plot(TimeSim,Hswn)
+        ax3.plot(TimeSim,Hlwin)
+        ax4.plot(TimeSim,(u**2+v**2)**0.5)
+        ax5.plot(TimeSim,Ta)
+        ax6.plot(TimeSim,Pa)
+        ax7.plot(TimeSim,RH)
+        ax8.plot(TimeSim,cw)
 
         ax1.set_ylabel(r'$eta$')
         plt.tight_layout()
