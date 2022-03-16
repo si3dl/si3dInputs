@@ -4,7 +4,7 @@
 # 1. bathy4si3d
     # This function writes the bathymetry file 'h' for si3d simulations. The code considers canonical and real basins. The use of this function is found next for each of the basins considered:
     # if the basin is a real lake use the functions as: bathy4si3d(BasinType,SimName,dx,xg,yg,zg)
-    # where xy,yg, and zg are 2-D matrices that contain the grid dimensions for the horizontal dimension based on a x=0,y=0 origin, and for the vetical dimension uses the depth of the lake with origin z=0 at the lake's surface.
+    # where xy,yg, and zg are 2-D matrices that contain the grid dimensions for the horizontal dimension based on a x=0,y=0 origin, and for the vetical dimension uses the depth of the lake with origin z=0 at the lake's surface amd NEGATIVE z values.
     # if the basin is rectangular use the functions as: bathy4si3d(BasinType,SimName,dx,L,B,H)
     # if the basin is spherical use the functions as: bathy4si3d(BasinType,SimName,dx,D,H)
     # if the basin is cylindrical use the functions as: bathy4si3d(BasinType,SimName,dx,D,H)
@@ -57,6 +57,8 @@ def bathy4si3d(BasinType,SimName,dx,PathSave,*args):
         print('GOOD! The length of the header is the right length (27)')
 
     if BasinType == 1:
+        basin = 'Lake'
+        mindepth = 0
         X = args[0]
         Y = args[1]
         zg = args[2]
@@ -104,7 +106,7 @@ def bathy4si3d(BasinType,SimName,dx,PathSave,*args):
 
     os.chdir(PathSave)
     ny,nx = np.shape(Z)
-    filename = 'h'+str(int(dx))+basin
+    filename = 'h'+str(int(dx))+'m_'+basin
     fid = open(filename,"w+")
     fid.write("%s" % Entry+'   imx =  '+str(nx)+',jmx =  '+str(ny)+',ncols = '+str(nx))
     fid.write("\n")
@@ -507,7 +509,7 @@ def surfbc4si3d(show,LakeName,surfbcType,days,hr,mins,year,dt,PathSave,*args):
         ax7.set_ylabel(r'$RH$')
         ax8.set_ylabel(r'$Wind\ Drag$')
         ax8.set_xlabel('day of year')
-        plt.tight_layout()    
+        plt.tight_layout()
         if show == True:
             plt.show()
         else:
