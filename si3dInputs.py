@@ -130,23 +130,16 @@ def bathy4si3d(BasinType,SimName,dx,PathSave,*args):
     return X, Y, Z
 
 # -------------- Function to create the initial condition file ------------------
-def initCond4si3d(LakeName,SimStartDate,DeltaZ,TempProf,PathSave,NTracers,*args):
+def initCond4si3d(LakeName,SimStartDate,DeltaZ,TempProf,PathSave,NTracers,**kw):
     if DeltaZ == 'constant':
         if TempProf == 'constant':
-            H = args[0]
-            dz = args[1]
-            Tc = args[2]
-            z = np.arange(0+dz/2,H+dz,dz)
-            T = Tc*np.ones(len(z))
+            z = np.arange(0+kw['dz']/2,kw['H']+kw['dz'],kw['dz'])
+            T = kw['Tc']*np.ones(len(z))
             z *= -1
             dummy2 = 'Source: From constant values                     - '
         elif TempProf == 'variable':
-            H = args[0]
-            dz = args[1]
-            z_CTD = args[2]
-            T_CTD = args[3]
-            z = np.arange(0+dz/2,H+dz,dz)
-            T = np.interp(z,z_CTD,T_CTD)
+            z = np.arange(0+kw['dz']/2,kw['H']+kw['dz'],kw['dz'])
+            T = np.interp(z,kw['z_CTD'],kw['T_CTD'])
             z *= -1
             dummy2 = 'Source: From CTD_Profile                         - '
         dummy1 = 'Depths (m) not used   Temp (oC)                  - '
@@ -155,20 +148,10 @@ def initCond4si3d(LakeName,SimStartDate,DeltaZ,TempProf,PathSave,NTracers,*args)
         N = 1000
         gridks = np.arange(1,N+1,1)
         if TempProf == 'constant':
-            H = args[0]
-            Tc = args[1]
-            spacingMethod = args[2]
-            dz0s = args[3]
-            dz0b = args[4]
-            dzxs = args[5]
-            dzxb = args[6]
-            n = args[7]
-            Hn = args[8]
-            dzc = args[9]
-            if spacingMethod == 'exp':
-                gridDZ = dz0s * dzxs**gridks
+            if kw['spacingMethod'] == 'exp':
+                gridDZ = kw['dz0s'] * kw['dzxs']**gridks
                 gridZ = np.cumsum(gridDZ)
-                igdepth = np.where(gridZ >= H)
+                igdepth = np.where(gridZ >= kw['H'])
                 km = igdepth[0][0]
                 kml = km + 2
                 surf = np.array([-100,-100])
@@ -178,16 +161,16 @@ def initCond4si3d(LakeName,SimStartDate,DeltaZ,TempProf,PathSave,NTracers,*args)
                 zz[1:] = zlevel[2:]
                 zi = -(zz[0:-1] + zz[1:])/2
                 z = zi
-            elif spacingMethod == 'sbconc':
+            elif kw['spacingMethod'] == 'sbconc':
                 gridkb = np.arange(1,N+1,1)
-                gridDZs = dz0s * dzxs**gridks
+                gridDZs = kw['dz0s'] * kw['dzxs']**gridks
                 gridZs = np.cumsum(gridDZs)
-                gridDZb = dz0b * dzxb**gridkb
+                gridDZb = kw['dz0b'] * kw['dzxb']**gridkb
                 gridZb = np.zeros(len(gridDZb)+1)
-                gridZb[0] = H
-                gridZb[1:] = H - np.cumsum(gridDZb)
-                idepths = gridZs <= H*(1-1/n)
-                idepthb = gridZb >= H*(1-1/n)
+                gridZb[0] = kw['H']
+                gridZb[1:] = kw['H'] - np.cumsum(gridDZb)
+                idepths = gridZs <= kw['H']*(1-1/kw['n'])
+                idepthb = gridZb >= kw['H']*(1-1/kw['n'])
                 gridZbb = gridZb[idepthb]
                 gridZss = gridZs[idepths]
                 gridZbb = sorted(gridZbb)
@@ -201,19 +184,19 @@ def initCond4si3d(LakeName,SimStartDate,DeltaZ,TempProf,PathSave,NTracers,*args)
                 zz[0] = 0
                 zi = -(zz[0:-1] + zz[1:])/2
                 z = zi
-            elif spacingMethod == 'surfvarBotconsta':
+            elif kw['spacingMethod'] == 'surfvarBotconsta':
                 gridkb = np.arange(1,N+1,1)
-                gridDZs = dz0s * dzxs**gridks
+                gridDZs = kw['dz0s'] * kw['dzxs']**gridks
                 gridZs = np.cumsum(gridDZs)
-                idepths = gridZs <= Hn
+                idepths = gridZs <= kw['Hn']
                 gridZss = gridZs[idepths]
                 Href = gridZss[-1]
-                gridZb = np.arange(Href+dzc,H+dzc,dzc)
-                if gridZb[-1] > H:
+                gridZb = np.arange(Href+kw['dzc'],kw['H']+kw['dzc'],kw['dzc'])
+                if gridZb[-1] > kw['H']:
                     gridZbb = gridZb
-                    gridZbb[-1] = H
+                    gridZbb[-1] = kw['H']
                 else:
-                    gridZbb = np.concatenate((gridZb,H))
+                    gridZbb = np.concatenate((gridZb,kw['H']))
                 gridZ = np.concatenate((gridZss,gridZbb))
                 gridZ = np.round(gridZ,2)
                 km = len(gridZ)
@@ -225,24 +208,13 @@ def initCond4si3d(LakeName,SimStartDate,DeltaZ,TempProf,PathSave,NTracers,*args)
                 zz[0] = 0
                 zi = -(zz[0:-1] + zz[1:])/2
                 z = zi
-            T = Tc*np.ones(len(z))
+            T = kw['Tc']*np.ones(len(z))
             dummy2 = 'Source: From constant values                     - '
         elif TempProf == 'variable':
-            H = args[0]
-            z_CTD = args[1]
-            T_CTD = args[2]
-            spacingMethod = args[3]
-            dz0s = args[4]
-            dz0b = args[5]
-            dzxs = args[6]
-            dzxb = args[7]
-            n = args[8]
-            Hn = args[9]
-            dzc = args[10]
-            if spacingMethod == 'exp':
-                gridDZ = dz0s * dzxs**gridks
+            if kw['spacingMethod'] == 'exp':
+                gridDZ = kw['dz0s'] * kw['dzxs']**gridks
                 gridZ = np.cumsum(gridDZ)
-                igdepth = np.where(gridZ >= H)
+                igdepth = np.where(gridZ >= kw['H'])
                 km = igdepth[0][0]
                 kml = km + 2
                 surf = np.array([-100,-100])
@@ -252,16 +224,16 @@ def initCond4si3d(LakeName,SimStartDate,DeltaZ,TempProf,PathSave,NTracers,*args)
                 zz[1:] = zlevel[2:]
                 zi = -(zz[0:-1] + zz[1:])/2
                 z = zi
-            elif spacingMethod == 'sbconc':
+            elif kw['spacingMethod'] == 'sbconc':
                 gridkb = np.arange(1,N+1,1)
-                gridDZs = dz0s * dzxs**gridks
+                gridDZs = kw['dz0s'] * kw['dzxs']**gridks
                 gridZs = np.cumsum(gridDZs)
-                gridDZb = dz0b * dzxb**gridkb
+                gridDZb = kw['dz0b'] * kw['dzxb']**gridkb
                 gridZb = np.zeros(len(gridDZb)+1)
-                gridZb[0] = H
-                gridZb[1:] = H - np.cumsum(gridDZb)
-                idepths = gridZs <= H*(1-1/n)
-                idepthb = gridZb >= H*(1-1/n)
+                gridZb[0] = kw['H']
+                gridZb[1:] = kw['H'] - np.cumsum(gridDZb)
+                idepths = gridZs <= kw['H']*(1-1/kw['n'])
+                idepthb = gridZb >= kw['H']*(1-1/kw['n'])
                 gridZbb = gridZb[idepthb]
                 gridZss = gridZs[idepths]
                 gridZbb = sorted(gridZbb)
@@ -275,23 +247,23 @@ def initCond4si3d(LakeName,SimStartDate,DeltaZ,TempProf,PathSave,NTracers,*args)
                 zz[0] = 0
                 zi = -(zz[0:-1] + zz[1:])/2
                 z = zi
-            elif spacingMethod == 'surfvarBotconsta':
+            elif kw['spacingMethod'] == 'surfvarBotconsta':
                 gridkb = np.arange(1,N+1,1)
-                gridDZs = dz0s * dzxs**gridks
+                gridDZs = kw['dz0s'] * kw['dzxs']**gridks
                 gridZs = np.cumsum(gridDZs)
-                gridDZb = dz0b * dzxb**gridkb
+                gridDZb = kw['dz0b'] * kw['dzxb']**gridkb
                 gridZb = np.zeros(len(gridDZb)+1)
-                gridZb[0] = H
-                gridZb[1:] = H - np.cumsum(gridDZb)
-                idepths = gridZs <= Hn
+                gridZb[0] = kw['H']
+                gridZb[1:] = kw['H'] - np.cumsum(gridDZb)
+                idepths = gridZs <= kw['Hn']
                 gridZss = gridZs[idepths]
                 Href = gridZss[-1]
-                gridZb = np.arange(Href+dzc,H+dzc,dzc)
-                if gridZb[-1] > H:
+                gridZb = np.arange(Href+kw['dzc'],kw['H']+kw['dzc'],kw['dzc'])
+                if gridZb[-1] > kw['H']:
                     gridZbb = gridZb
-                    gridZbb[-1] = H
+                    gridZbb[-1] = kw['H']
                 else:
-                    gridZbb = np.concatenate((gridZb,H))
+                    gridZbb = np.concatenate((gridZb,kw['H']))
                 gridZ = np.concatenate((gridZss,gridZbb))
                 gridZ = np.round(gridZ,2)
                 km = len(gridZ)
@@ -304,7 +276,7 @@ def initCond4si3d(LakeName,SimStartDate,DeltaZ,TempProf,PathSave,NTracers,*args)
                 zi = -(zz[0:-1] + zz[1:])/2
                 z = zi
             z *= -1
-            T = np.interp(z,z_CTD,T_CTD)
+            T = np.interp(z,kw['z_CTD'],kw['T_CTD'])
             z *= -1
             dummy2 = 'Source: From CTD_Profile                         - '
         dummy1 = 'Depths (m)   Temp (oC)                           - '
@@ -325,19 +297,26 @@ def initCond4si3d(LakeName,SimStartDate,DeltaZ,TempProf,PathSave,NTracers,*args)
             fid.write('%10.2f %10.4f \n' % (z[i],T[i]))
         fid.write('%10.2f %10.4f \n' % (z[i],T[i]))
     else:
-        tracers = np.zeros(NTracers)
+        _, cols1 = kw['z_Tr'].shape
+        _, cols2 = kw['conc_Tr'].shape
+        if cols1 != NTracers or cols2 != NTracers or cols1 != cols2:
+            print('¡¡¡ERROR!!! The number of tracers ',str(NTracers),' does not match number of columns in the variables for the depths ', str(cols1),' and concentrations of the tracers ', str(cols2))
+            exit()
+        tracers = np.empty((len(z),NTracers))*np.nan
+        for i in range(0,NTracers):
+            tracers[:,i] = np.interp(-z,kw['z_Tr'][:,i],kw['conc_Tr'][:,i])
         fid.write('%10.2f %10.4f' % (z[0],T[0]))
         for j in range(0,NTracers):
-            fid.write('%11.4f' % tracers[j])
+            fid.write('%11.4f' % tracers[0,j])
         fid.write('\n')
         for i in range(0,len(T)):
             fid.write('%10.2f %10.4f' % (z[i],T[i]))
             for j in range(0,NTracers):
-                fid.write('%11.4f' % tracers[j])
+                fid.write('%11.4f' % tracers[i,j])
             fid.write('\n')
         fid.write('%10.2f %10.4f' % (z[i],T[i]))
         for j in range(0,NTracers):
-            fid.write('%11.4f' % tracers[j])
+            fid.write('%11.4f' % tracers[i,j])
         fid.write('\n')
 
     fid.close()
