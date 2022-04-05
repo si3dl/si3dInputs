@@ -143,6 +143,8 @@ def initCond4si3d(LakeName,SimStartDate,DeltaZ,TempProf,PathSave,NTracers,**kw):
             z *= -1
             dummy2 = 'Source: From CTD_Profile                         - '
         dummy1 = 'Depths (m) not used   Temp (oC)                  - '
+        if NTracers != 0:
+            dummy1 = 'Depths (m) not used   Temp (oC)   Tracers (g/L) --> - '
     elif DeltaZ == 'variable':
         # Length of initial grid for creating the unevenly spaced grid
         N = 1000
@@ -281,12 +283,15 @@ def initCond4si3d(LakeName,SimStartDate,DeltaZ,TempProf,PathSave,NTracers,**kw):
             dummy2 = 'Source: From CTD_Profile                         - '
         dummy1 = 'Depths (m)   Temp (oC)                           - '
 
+    if NTracers != 0:
+        dummy1 = 'Depths (m)   Temp (oC)   Tracers (g/L) -->       - '
+
     # ----------------------- Creation of file ---------------------------------
     os.chdir(PathSave)
     fid = open('si3d_init.txt','w+')
     fid.write('%s\n' % 'Initial condition file for si3d model            - ')
     fid.write('%s' % LakeName+'             - '+'\n')
-    fid.write('%s' % 'Simulation starting on '+SimStartDate+'       - '+'\n')
+    fid.write('%s' % 'Simulation starting on '+SimStartDate+' UTC    - '+'\n')
     fid.write('%s\n' % dummy1)
     fid.write('%s\n' % dummy2)
     fid.write('%s\n' % '-------------------------------------------------- ')
