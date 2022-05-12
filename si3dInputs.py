@@ -570,16 +570,19 @@ def HeatBudget(HeatBudgetMethod,eta,Hswn,Hlwin,Hlwout,Ta,Pa,RH,Cl,cw,u,v,WaTemp,
         # Vapor Pressure
         if esMethod == 1:
             es = 6.11 * np.exp(17.3 * Ta/(Ta + 237.3))
+            esw = 6.11 * np.exp(17.3 * WaTemp/(WaTemp + 237.3))
         elif esMethod == 2:
             es = 6.11 * np.exp(7.5 * Ta /(Ta + 237.3))
+            esw = 6.11 * np.exp(7.5 * WaTemp /(WaTemp + 237.3))
         elif esMethod == 3:
-            es3 = 10**(9.286-(2322.38/(Ta+273.15)))
+            es = 10**(9.286-(2322.38/(Ta+273.15)))
+            esw = 10**(9.286-(2322.38/(WaTemp+273.15)))
         ea = es*RH
         # Longwave radiation
         Hlwn = Hlwin - Hlwout
         # Latent Heat Flux (Negative as it exits)
         fwind = 1.02e-9*wspd
-        Hl = -rho0 * Lv * fwind * (es-ea)
+        Hl = -rho0 * Lv * fwind * (esw-ea)
         # Sensible heat flux (negative due to consideration of difference between water temp and air temp)
         Hs = -rho0 * Lv * fwind * CbPa_P * (WaTemp - Ta)
         # Net Heat Flux
