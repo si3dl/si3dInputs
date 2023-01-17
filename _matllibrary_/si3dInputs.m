@@ -28,19 +28,22 @@
 % dzmax max dz for exponential spacing
 clear all; close all; clc
 
-
+% input files
 LakeName = 'Llanquihue';
 pathname = '/Users/micahswann/Documents/GitHub/si3dInputs/_matllibrary_/Example'; % path to init cond file files
-savepath = '/Users/micahswann/Dropbox/03-CHILELAGOS_TAHOE/32- Si3D/2_Llanquihue/3_Inputs/init_cond'; % location to save files
+bathyfile = '/Users/micahswann/Documents/GitHub/si3dInputs/_matllibrary_/Example/Llanquihue_Bathy_50m.csv';
+shoreline = '/Users/micahswann/Documents/GitHub/si3dInputs/_matllibrary_/Example/Llanquihue_Shoreline.csv';
+savepath = '/Users/micahswann/Documents/GitHub/si3dInputs/_matllibrary_/Files'; % location to save files
 TempProf = 'variable'; % variable or uniform
 start_temp = 14.5; % starting initial temp if TempProf is UNIFORM
-spacing_method = 'expo'; % %=
+spacing_method = 'expo'; %
+dx = 50;
 dz = 2; % vertical grid size for CONSTANT layering
 dzmin = 0.5; % minimum dz for exponential spaced layers
 dzmax = 10; % maximum dz for exponetially spaced layers
-fpath = '/Users/micahswann/Desktop/profile_example.txt';
+fpath = '/Users/micahswann/Documents/GitHub/si3dInputs/_matllibrary_/Example/profile_example.txt';
 SimStartDate = datetime(2021,01,01);
 
-
-
+% running scripts
+bathy4si3d(LakeName,fpath,savepath,bathyfile,shoreline,dx)
 initcond4si3d(LakeName,fpath,savepath,SimStartDate,spacing_method,TempProf,dz,dzmin,dzmax);
