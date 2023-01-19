@@ -61,12 +61,12 @@ SimStartDate = datetime(2022,05,01);
 %% running example
 
 % bathymetry
-bathy4si3d_git(LakeName,pathname,savepath,bathyfile,shoreline,dx);
+bathy4si3d(LakeName,pathname,savepath,bathyfile,shoreline,dx);
 toc
 disp('bathy input file created')
 
 % init condition
-initcond4si3d_git(LakeName,fpath,savepath,SimStartDate,spacing_method,TempProf,dz,dzmin,dzmax);
+initcond4si3d(LakeName,fpath,savepath,SimStartDate,spacing_method,TempProf,dz,dzmin,dzmax);
 
 toc
 disp('init condition files created')
