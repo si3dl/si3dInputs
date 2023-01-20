@@ -86,8 +86,8 @@ def bathy4si3d(BasinType, SimName, dx, PathSave, *args):
         L = args[0]
         B = args[1]
         H = args[2]
-        x = np.arange(dx, B + dx, dx)
-        y = np.arange(dx, L + dx, dx)
+        x = np.arange(dx, L + dx, dx)
+        y = np.arange(dx, B + dx, dx)
         X, Y = np.meshgrid(x, y)
         z = -99 * np.ones(np.shape(X))
         z[:, :] = H * (10)
