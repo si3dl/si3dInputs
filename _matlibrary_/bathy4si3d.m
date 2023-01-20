@@ -11,7 +11,7 @@
 
 %% ... User inputs
 
-function [f]=bathy4si3d_git(lakename,pathname,savepath,bathyfile,shoreline,dx)
+function [f]=bathy4si3d(lakename,pathname,savepath,bathyfile,shoreline,dx)
 
 % 
 % lakename = 'Lago Llanq'; % lake name (needs to be 10 characters long)

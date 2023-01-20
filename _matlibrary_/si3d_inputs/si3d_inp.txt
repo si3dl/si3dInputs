@@ -1,0 +1,94 @@
+*******************************************************
+LAGO LLANQUIHUE 2021 SIMULATION -----------------------
+=======================================================
+Start date and time for simulations
+-------------------------------------------------------
+year         !    2022            ! 
+month        !      05            ! 
+day          !      01            ! 
+hour         !    0000            ! 
+-------------------------------------------------------
+Space-time domains, cell size & time steps
+-------------------------------------------------------
+xl           !    41600.          ! Length of domain (m) in EW direction (imx)
+yl           !    41200.          !   "    "    "    (m) in NS       " (jmx)
+zl           !      348.0         !   "    "    "    (m) in vertical
+tl           !   432000.          ! Length of time (s) simulated
+idx          !     400.           ! Cell size (m) in EW direction
+idy          !     400.           ! Cell size (m) in NS direction
+idz          !       2.0          ! Cell size (m) in vertical
+dzmin        !       2.0          ! Min. cell size (m) in vertical
+datadj       !       0.0          ! Adjustment of datum by default datum = 0.0
+zeta0        !       0.0          ! Initial location of water surface
+idt          !      50.0          ! Time step (s)
+ibathf       !       -1           ! How bathy file is read 0(General) 1(SDWSC) 2(SHR)
+-------------------------------------------------------
+Parameters controlling solution algorithm
+-------------------------------------------------------
+itrap        !        1           ! 1 = trapezoidal iteration is used; single step LF if 0
+niter        !        2           ! No. of trapezoidal iterations 
+smooth       !        0           ! Smoothing of LF solution 1 = Smooth; 0 = DO NOT smooth
+beta         !     0.05           ! Beta parameter for smoothing filter (0.05-0.2 recommended)
+iturb        !        1           ! 0 = constant vert. eddy visc. 1 = 2-eq. model (Mellor&Yamada)
+az0          !    1.E-3           ! Constant vert. eddy viscosity (if iturb = 0)
+dz0          !    1.E-3           ! Constant vert. eddy diffusivity (if iturb = 0)
+iadv         !        1           ! 0 = mom. advection OFF; 1 = mom. advection ON
+itrmom       !        1           ! Algorithm for mom. horizontal advection 1=centered; 2=upwind
+ihd          !        2           ! 0 = horizontal diffusion (of mom. or scalar) OFF 1 = horiz. diffusion ON  2 = Smagorisnki
+ax0          !    1.E-2           ! Horizontal eddy diffusivity/viscosity in EW-direction (ms-2)
+ay0          !    1.E-2           ! Horizontal eddy diffusivity/viscosity in NS-direction(ms-2)
+f            !   -9.57e-5         ! f Coriolis parameter (s-1)
+theta        !        1.          ! Weighting parameter for semi-implicit solution (0.5-1) - Not used
+ibc          !        1           ! 1 = Baroclinic terms in included in mom. solution (0 otherwise)
+isal         !        1           ! 1 = Solve scalar transport equation (0 otherwise)
+itrsch       !        1           ! Scalar advection 1=centered(C);2=upwind(U);3=U at k=k1z+1; (4)=Flux limiter
+cd           !    0.004           ! Bottom drag coefficient (adimensional)
+ifsbc        !        3           ! Surface BC; 0 = constant ; 1 = preprocess mode ; 2 = runtime mode
+dtsbc        !    3600.           ! Time step (s) between records in surbc.txt (when ifsbc = 1)
+cw           !     1E-3           ! Wind drag coefficient (only if ifsbc = 0)
+ws           !       50           ! Wind speed (constant in m/s) when ifsbc = 0
+phi          !      1.0           ! Wind direction (constant in degress) when ifsbc = 0 (DUE NORTH)
+idbg         !        1           ! 0 = no check messages 1 = check messages output for debug purposes
+nth          !       12           !
+-------------------------------------------------------
+Output specifications for time files (individual nodes)
+-------------------------------------------------------
+ ipt         !       72           ! No. of time step between consecutive output to time file  (1h)
+ nnodes      !        3           ! p4, p6, p7
+ inodes      !  21   33  65
+ jnodes      !  14   70  73
+-------------------------------------------------------
+Output specifications for H-plane files (plot in matlab with LoadPlotSheetFile3L)
+-------------------------------------------------------
+ iht         !        0           ! No. of time step between consecutive output to plane file  (2h)
+-------------------------------------------------------
+Output specifications for X-section files (plot in matlab with LoadPlotSectionFile3L)
+-------------------------------------------------------
+ixt         !        0            ! No. of time step between consecutive output to section file
+-------------------------------------------------------
+Output specifications for 3D space files
+-------------------------------------------------------
+ipxml        !        0           ! No. of time step between consecutive output to 3D-space file (0.25h)
+itspf        !        0           ! No. of time steps before first output to 3D-space file
+-------------------------------------------------------
+Open boundary conditions specifications 
+-------------------------------------------------------
+nopen        !        0           ! No. of open boundaries
+-------------------------------------------------------
+Open boundary conditions for nesting procedures  
+-------------------------------------------------------
+ nxBDO       !        0           ! No. of open bdries
+-------------------------------------------------------
+Specification for tracer (other than oxygen) simulation 
+-------------------------------------------------------
+ntr          !        0           ! No. of tracers sim.
+-------------------------------------------------------
+Specification for oxgygenation system simulations
+-------------------------------------------------------
+ iopss       !        0                           ! No. of columns with point sources-sinks
+-------------------------------------------------------
+Specification for interpolation method
+-------------------------------------------------------
+ iinterp     !        2           ! Interpolation type (1=old Barnes, 2=new Barnes, 3=inverse distance)
+ gammaB      !      0.3           ! Correction pass factor for new Barnes method (0.2<=gammaB<=1.0)
+ delNfactor  !      1.5           ! Sphere of influence factor for new Barnes method (factor>=1.0)

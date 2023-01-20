@@ -1,5 +1,5 @@
 
-%% initcond4si3d_Llanquihue.m
+%% initcond4si3d.m
 % ----------------------------
 % Generate initial condition file for Si3D 
 % --------------------------------------
