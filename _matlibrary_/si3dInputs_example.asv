@@ -65,14 +65,11 @@
 %           - lat - latitude of study site [degrees]
 %           - lon - longitude of study site [degrees]
 %           - lsm - local stanard meridian
-%           - hemisphere - hemispehre of study site ('N','S') need for
-%           correct astronomic calculations
-%           - spinup time - model spin time in seconds, winds will be set
-%           to 0.001 m/s during this period. 3 days is recommended
+%           - hemisphere - hemispehre of study site (
 
 clear all; close all; clc; tic
 
-%% Example User Inputs
+%% User Inputs
 
 % path/ file names
 LakeName = 'Llanquihue';
@@ -106,10 +103,10 @@ lsm = 50; % local standard meridian
 hemisphere = 'S'; % N/S; % if S the decliniation of the sun in fliped in cloudiness calcs
 spinup = 3*3600*24; % spinup time in seconds. Winds will be set to 0.001 m/s
 
-%% Example function calls
+%% running example
 
 % bathymetry
-bathy4si3d(LakeName,pathname,savepath,bathyfile,shorelinefile,dx);
+% bathy4si3d(LakeName,pathname,savepath,bathyfile,shorelinefile,dx);
 toc
 disp('bathy input file created')
 
@@ -119,6 +116,6 @@ toc
 disp('init condition files created')
 
 % surfbc
-surfbc4si3d(LakeName,metfile,savepath,surfbcType,SimStartDate,duration,dt,lat,lon,lsm,hemisphere,spinup);
+% surfbc4si3d(LakeName,metfile,savepath,surfbcType,SimStartDate,duration,dt,lat,lon,lsm,hemisphere,spinup);
 toc
 disp('surfbc file created')
