@@ -21,8 +21,6 @@ February 2021
 import sys
 import os
 import numpy as np
-import matplotlib.pyplot as plt
-import datetime as Dt
 
 
 def bathy4si3d(BasinType, SimName, dx, PathSave, *args):
@@ -47,7 +45,6 @@ def bathy4si3d(BasinType, SimName, dx, PathSave, *args):
     else:
         print('GOOD! The length of the header is the right length (27)')
     if BasinType == 1:
-        basin = 'Lake'
         mindepth = 0
         X = args[0]
         Y = args[1]
@@ -60,7 +57,6 @@ def bathy4si3d(BasinType, SimName, dx, PathSave, *args):
         zz[idata] = zg[idata] * (-10)
         Z = zz
     elif BasinType == 2:
-        basin = 'rectangular'
         L = args[0]
         B = args[1]
         H = args[2]
@@ -72,7 +68,6 @@ def bathy4si3d(BasinType, SimName, dx, PathSave, *args):
         Z = z
         del x, y, z
     elif BasinType == 3:
-        basin = 'circular'
         R = args[0] / 2
         H = args[1]
         x = np.arange(0, 2 * R + 2 * dx, dx)
@@ -118,3 +113,4 @@ def bathy4si3d(BasinType, SimName, dx, PathSave, *args):
     fid.close()
     print('The bathymetry file was save in ' + PathSave + ' as ' + filename)
     return X, Y, Z
+    

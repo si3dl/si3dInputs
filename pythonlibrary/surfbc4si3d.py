@@ -20,11 +20,11 @@ Copy right Sergio A. Valbuena 2021
 UC Davis - TERC
 February 2021
 """
-import sys
 import os
 import numpy as np
 import matplotlib.pyplot as plt
 import datetime as Dt
+
 
 def surfbcW4si3d(caseStudy, Time, dt, PathSave, cw, u, v):
     """
@@ -52,9 +52,9 @@ def surfbcW4si3d(caseStudy, Time, dt, PathSave, cw, u, v):
     fid.write('%s' % '   npts = ' + str(r) + '\n')
     for i in range(0, r):
         a0 = (days[i] - daystart) * 24
-        a1 = cw[i];  # **** Wind drag coefficient
-        a2 = u[i];  # **** Wind speed in the EW direction
-        a3 = v[i];  # **** Wind speed in the NS direction
+        a1 = cw[i]  # **** Wind drag coefficient
+        a2 = u[i]  # **** Wind speed in the EW direction
+        a3 = v[i]  # **** Wind speed in the NS direction
         format = '%10.4f %10.4f %10.4f %10.4f \n'
         fid.write(format % (a0, a1, a2, a3))
     return
@@ -88,11 +88,6 @@ def surfbc4si3d(show, LakeName, surfbcType, days, hr, mins, year, dt, PathSave, 
         days[0]) + ',' + str(year) + '\n')
 
     if surfbcType == 1:
-        fid.write('%s\n' % '   Time in   // Data format is (10X,G11.2,...) Time attc Hsw Hn cw ua va')
-        fid.write('%s' % '   ' + str(dt) + '-min    // SOURCE = ' + LakeName + ' Met Data ' + str(year) + '\n')
-        fid.write('%s' % ' intervals  (Note : file prepared on ' + str(
-            Dt.date.today()) + 'HeatBudget = ' + HeatBudgetMethod + '\n')
-        fid.write('%s' % '   npts = ' + str(r) + '\n')
         HeatBudgetMethod = args[0]
         eta = args[1]
         Hswn = args[2]
@@ -139,12 +134,16 @@ def surfbc4si3d(show, LakeName, surfbcType, days, hr, mins, year, dt, PathSave, 
             print('UNDER DEVELOPMENT, THIS FUNCTION DOES NOT WORK')
             print('The file has not been created')
             exit()
+        fid.write('%s\n' % '   Time in   // Data format is (10X,G11.2,...) Time attc Hsw Hn cw ua va')
+        fid.write('%s' % '   ' + str(dt) + '-min    // SOURCE = ' + LakeName + ' Met Data ' + str(year) + '\n')
+        fid.write('%s' % ' intervals  (Note : file prepared on ' + str(Dt.date.today()) + 'HeatBudget = ' + HeatBudgetMethod + '\n')
+        fid.write('%s' % '   npts = ' + str(r) + '\n')
         for i in range(0, r):
             a0 = (days[i] - daystart) * 24
             a1 = eta[i]
             a2 = Hswn[i]
             a3 = Hn[i]
-            a4 = cw[j]
+            a4 = cw[i]
             a5 = u[i]
             a6 = v[i]
             format = '%10.4f %10.4f %10.4f %10.4f %10.4f %10.4f %10.4f \n'
@@ -167,14 +166,14 @@ def surfbc4si3d(show, LakeName, surfbcType, days, hr, mins, year, dt, PathSave, 
         for i in range(0, r):
             a0 = (days[i] - daystart) * 24
             a1 = eta[i]  # light attenuation coefficient
-            a2 = Hswn[i];  # Penetrative component of heat flux (albedo already taken into account)
-            a3 = Ta[i];  # Air temperature
-            a4 = Pa[i];  # Atmospheric pressure
-            a5 = RH[i];  # relative humidty (fraction)
-            a6 = Cl[i];  # cloud cover (fraction)
-            a7 = cw[i];  # **** Wind drag coefficient
-            a8 = u[i];  # **** Wind speed in the EW direction
-            a9 = v[i];  # **** Wind speed in the NS direction
+            a2 = Hswn[i]  # Penetrative component of heat flux (albedo already taken into account)
+            a3 = Ta[i]  # Air temperature
+            a4 = Pa[i]  # Atmospheric pressure
+            a5 = RH[i]  # relative humidty (fraction)
+            a6 = Cl[i]  # cloud cover (fraction)
+            a7 = cw[i]  # **** Wind drag coefficient
+            a8 = u[i]  # **** Wind speed in the EW direction
+            a9 = v[i]  # **** Wind speed in the NS direction
             if a4 >= 100000:
                 format = '%10.4f %10.4f %10.4f %10.4f %10.3f %10.4f %10.4f %10.4f %10.4f %10.4f \n'
             else:
@@ -289,14 +288,15 @@ def surfbc4si3d(show, LakeName, surfbcType, days, hr, mins, year, dt, PathSave, 
         v = args[2]
         for i in range(0, r):
             a0 = (days[i] - daystart) * 24
-            a1 = cw[i];  # **** Wind drag coefficient
-            a2 = u[i];  # **** Wind speed in the EW direction
-            a3 = v[i];  # **** Wind speed in the NS direction
+            a1 = cw[i]  # **** Wind drag coefficient
+            a2 = u[i]  # **** Wind speed in the EW direction
+            a3 = v[i]  # **** Wind speed in the NS direction
             format = '%10.4f %10.4f %10.4f %10.4f \n'
             fid.write(format % (a0, a1, a2, a3))
 
     fid.close()
     return
+
 
 def HeatBudget(HeatBudgetMethod, eta, Hswn, Hlwin, Hlwout, Ta, Pa, RH, Cl, cw, u, v, WaTemp, cChapra, esMethod):
     if HeatBudgetMethod == 'Chapra1995':

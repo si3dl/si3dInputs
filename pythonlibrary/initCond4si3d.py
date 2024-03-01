@@ -21,11 +21,9 @@ Copy right Sergio A. Valbuena 2021
 UC Davis - TERC
 February 2021
 """
-import sys
 import os
 import numpy as np
-import matplotlib.pyplot as plt
-import datetime as Dt
+
 
 def initCond4si3d(LakeName, SimStartDate, DeltaZ, TempProf, PathSave, NTracers, **kw):
     """
@@ -39,6 +37,7 @@ def initCond4si3d(LakeName, SimStartDate, DeltaZ, TempProf, PathSave, NTracers, 
     :param kw:
     :return:
     """
+
     if DeltaZ == 'constant':
         if TempProf == 'constant':
             z = np.arange(0 + kw['dz'] / 2, kw['H'], kw['dz'])
@@ -66,7 +65,7 @@ def initCond4si3d(LakeName, SimStartDate, DeltaZ, TempProf, PathSave, NTracers, 
                 kml = km + 2
                 surf = np.array([-100, -100])
                 zlevel = np.concatenate((surf, gridZ[0:km + 1]))
-                Layer = LayerGenerator(zlevel, kml, PathSave)
+                _ = LayerGenerator(zlevel, kml, PathSave)
                 zz = np.zeros(len(zlevel) - 1)
                 zz[1:] = zlevel[2:]
                 zi = -(zz[0:-1] + zz[1:]) / 2
@@ -89,7 +88,7 @@ def initCond4si3d(LakeName, SimStartDate, DeltaZ, TempProf, PathSave, NTracers, 
                 kml = km + 2
                 surf = np.array([-100, -100])
                 zlevel = np.concatenate((surf, gridZ))
-                Layer = LayerGenerator(zlevel, kml, PathSave)
+                _ = LayerGenerator(zlevel, kml, PathSave)
                 zz = zlevel[1:]
                 zz[0] = 0
                 zi = -(zz[0:-1] + zz[1:]) / 2
@@ -113,7 +112,7 @@ def initCond4si3d(LakeName, SimStartDate, DeltaZ, TempProf, PathSave, NTracers, 
                 kml = km + 2
                 surf = np.array([-100, -100])
                 zlevel = np.concatenate((surf, gridZ))
-                Layer = LayerGenerator(zlevel, kml, PathSave)
+                _ = LayerGenerator(zlevel, kml, PathSave)
                 zz = zlevel[1:]
                 zz[0] = 0
                 zi = -(zz[0:-1] + zz[1:]) / 2
@@ -129,7 +128,7 @@ def initCond4si3d(LakeName, SimStartDate, DeltaZ, TempProf, PathSave, NTracers, 
                 kml = km + 2
                 surf = np.array([-100, -100])
                 zlevel = np.concatenate((surf, gridZ[0:km + 1]))
-                Layer = LayerGenerator(zlevel, kml, PathSave)
+                _ = LayerGenerator(zlevel, kml, PathSave)
                 zz = np.zeros(len(zlevel) - 1)
                 zz[1:] = zlevel[2:]
                 zi = -(zz[0:-1] + zz[1:]) / 2
@@ -152,7 +151,7 @@ def initCond4si3d(LakeName, SimStartDate, DeltaZ, TempProf, PathSave, NTracers, 
                 kml = km + 2
                 surf = np.array([-100, -100])
                 zlevel = np.concatenate((surf, gridZ))
-                Layer = LayerGenerator(zlevel, kml, PathSave)
+                _ = LayerGenerator(zlevel, kml, PathSave)
                 zz = zlevel[1:]
                 zz[0] = 0
                 zi = -(zz[0:-1] + zz[1:]) / 2
@@ -180,7 +179,7 @@ def initCond4si3d(LakeName, SimStartDate, DeltaZ, TempProf, PathSave, NTracers, 
                 kml = km + 2
                 surf = np.array([-100, -100])
                 zlevel = np.concatenate((surf, gridZ))
-                Layer = LayerGenerator(zlevel, kml, PathSave)
+                _ = LayerGenerator(zlevel, kml, PathSave)
                 zz = zlevel[1:]
                 zz[0] = 0
                 zi = -(zz[0:-1] + zz[1:]) / 2
@@ -191,9 +190,15 @@ def initCond4si3d(LakeName, SimStartDate, DeltaZ, TempProf, PathSave, NTracers, 
             dummy2 = 'Source: From CTD_Profile                         - '
         dummy1 = 'Depths (m)   Temp (oC)                           - '
 
+    dummy3 = '         z          T'
     if NTracers != 0:
         dummy1 = 'Depths (m)   Temp (oC)   Tracers (g/L) -->       - '
-
+        # To create array of header names for z, T, and constituents
+        name_Tr = kw['name_Tr']
+        for i in range(0, len(name_Tr)):
+            while len(name_Tr[i]) <= 10:
+                name_Tr[i] = ' ' + name_Tr[i]
+        dummy3 = dummy3 + ''.join(name_Tr)
     # ----------------------- Creation of file ---------------------------------
     os.chdir(PathSave)
     fid = open('si3d_init.txt', 'w+')
@@ -202,7 +207,8 @@ def initCond4si3d(LakeName, SimStartDate, DeltaZ, TempProf, PathSave, NTracers, 
     fid.write('%s' % 'Simulation starting on ' + SimStartDate + ' UTC    - ' + '\n')
     fid.write('%s\n' % dummy1)
     fid.write('%s\n' % dummy2)
-    fid.write('%s\n' % '-------------------------------------------------- ')
+    fid.write('%s\n' % dummy3)
+    fid.write('%s\n' % '----------------------------------------------------------------- ')
 
     if NTracers == 0:
         fid.write('%10.2f %10.4f \n' % (z[0], T[0]))
@@ -236,6 +242,7 @@ def initCond4si3d(LakeName, SimStartDate, DeltaZ, TempProf, PathSave, NTracers, 
 
     fid.close()
     return T, z
+
 
 def LayerGenerator(zlevel, kml, PathSave):
     """
