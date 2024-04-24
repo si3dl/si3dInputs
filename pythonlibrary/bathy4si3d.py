@@ -91,7 +91,7 @@ def bathy4si3d(BasinType, SimName, dx, PathSave, *args):
 
     os.chdir(PathSave)
     ny, nx = np.shape(Z)
-    filename = 'h'
+    filename = 'si3d_bathy'
     fid = open(filename, "w+")
     fid.write("%s" % Entry + '   imx =  ' + str(nx) + ',jmx =  ' + str(ny) + ',ncols = ' + str(nx))
     fid.write("\n")

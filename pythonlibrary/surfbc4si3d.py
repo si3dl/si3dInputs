@@ -60,10 +60,10 @@ def surfbcW4si3d(caseStudy, Time, dt, PathSave, cw, u, v):
     return
 
 
-def surfbc4si3d(show, LakeName, surfbcType, days, hr, mins, year, dt, PathSave, *args):
+def surfbc4si3d(show, LakeName, surfbcType, days, hr, mins, year, dt, PathSave, **kw):
     """
     Function to create surface boundary condition using variable options for the heat
-    sources. This function preprocess the meteorological parameters and creates a surfbc.txt file
+    sources. This function preprocess the meteorological parameters and creates a si3d_surfbc.txt file
     for SI3D. The file has the inputs for the heatbudget method chosen.
     :param show:
     :param LakeName:
@@ -81,27 +81,27 @@ def surfbc4si3d(show, LakeName, surfbcType, days, hr, mins, year, dt, PathSave, 
     r = len(days)
     daystart = days[0]
     # To write the file surfbc for the numerical simulation in si3d
-    fid = open('surfbc.txt', 'wt+')
+    fid = open('si3d_surfbc.txt', 'wt+')
     fid.write('%s\n' % 'Surface boundary condition file for si3d model')
     fid.write('%s' % LakeName + ' simulations \n')
     fid.write('%s' % 'Time is given in hours from ' + str(hr[0]) + ':' + str(mins[0]) + ' hrs on julian day ' + str(
         days[0]) + ',' + str(year) + '\n')
 
     if surfbcType == 1:
-        HeatBudgetMethod = args[0]
-        eta = args[1]
-        Hswn = args[2]
-        Hlwin = args[3]
-        Hlwout = args[4]
-        Ta = args[5]
-        Pa = args[6]
-        RH = args[7] / 100
-        Cl = args[8]
-        cw = args[9]
-        u = args[10]
-        v = args[11]
-        WaTemp = args[12]
-        TimeSim = args[13]
+        HeatBudgetMethod = kw['HM']
+        eta = kw['eta']
+        Hswn = kw['Hswn']
+        Hlwin = kw['Hlwin']
+        Hlwout = kw['Hlwout']
+        Ta = kw['Ta']
+        Pa = kw['Pa']
+        RH = kw['RH'] / 100
+        Cl = kw['Cl']
+        cw = kw['cw']
+        u = kw['u']
+        v = kw['v']
+        WaTemp = kw['waT']
+        TimeSim = kw['t_Sim']
 
         if HeatBudgetMethod == 'Chapra1995':
             rho0 = 1000
@@ -153,16 +153,16 @@ def surfbc4si3d(show, LakeName, surfbcType, days, hr, mins, year, dt, PathSave, 
         fid.write('%s' % '   ' + str(dt) + '-min    // SOURCE = ' + LakeName + ' Met Data ' + str(year) + '\n')
         fid.write('%s' % ' intervals  (Note : file prepared on ' + str(Dt.date.today()) + '\n')
         fid.write('%s' % '   npts = ' + str(r) + '\n')
-        eta = args[0]
-        Hswn = args[1]
-        Ta = args[2]
-        Pa = args[3]
-        RH = args[4] / 100
-        Cl = args[5]
-        cw = args[6]
-        u = args[7]
-        v = args[8]
-        TimeSim = args[9]
+        eta = kw['eta']
+        Hswn = kw['Hswn']
+        Ta = kw['Ta']
+        Pa = kw['Pa']
+        RH = kw['RH'] / 100
+        Cl = kw['Cl']
+        cw = kw['cw']
+        u = kw['u']
+        v = kw['v']
+        TimeSim = kw['t_Sim']
         for i in range(0, r):
             a0 = (days[i] - daystart) * 24
             a1 = eta[i]  # light attenuation coefficient
@@ -212,16 +212,16 @@ def surfbc4si3d(show, LakeName, surfbcType, days, hr, mins, year, dt, PathSave, 
         fid.write('%s' % '   ' + str(dt) + '-min    // SOURCE = ' + LakeName + ' Met Data ' + str(year) + '\n')
         fid.write('%s' % ' intervals  (Note : file prepared on ' + str(Dt.date.today()) + '\n')
         fid.write('%s' % '   npts = ' + str(r) + '\n')
-        eta = args[0]
-        Hswn = args[1]
-        Ta = args[2]
-        Pa = args[3]
-        RH = args[4] / 100
-        Hlwin = args[5]
-        cw = args[6]
-        u = args[7]
-        v = args[8]
-        TimeSim = args[9]
+        eta = kw['eta']
+        Hswn = kw['Hswn']
+        Ta = kw['Ta']
+        Pa = kw['Pa']
+        RH = kw['RH'] / 100
+        Hlwin = kw['Hlwin']
+        cw = kw['cw']
+        u = kw['u']
+        v = kw['v']
+        TimeSim = kw['t_Sim']
         for i in range(0, r):
             a0 = (days[i] - daystart) * 24
             a1 = eta[i]  # light attenuation coefficient
@@ -268,14 +268,88 @@ def surfbc4si3d(show, LakeName, surfbcType, days, hr, mins, year, dt, PathSave, 
         else:
             print('No plot')
     elif surfbcType == 10:
-        print('UNDER DEVELOPMENT, THIS FUNCTION DOES NOT WORK')
-        print('The file has not been created')
-        exit()
+        n_stat = kw['n_stat']
+        fid.write('%s\n' % '   Time in   // Data format is (10X,G11.2,...) Time attc Hsw Ta Pa hr cc cw ua va')
+        fid.write('%s' % '   ' + str(dt) + '-min    // SOURCE = ' + LakeName + ' Met Data ' + str(year) + '\n')
+        fid.write('%s' % ' intervals  (Note : file prepared on ' + str(Dt.date.today()) + '\n')
+        fid.write('%s' % ' No. Stats ' + str(n_stat) + '\n')
+        fid.write('%s ' % ' Grid Locs')
+        eta = kw['eta']
+        Hswn = kw['Hswn']
+        Ta = kw['Ta']
+        Pa = kw['Pa']
+        RH = kw['RH'] / 100
+        Cl = kw['Cl']
+        u = kw['u']
+        v = kw['v']
+        TimeSim = kw['t_Sim']
+        imet = kw['imet']
+        jmet = kw['jmet']
+
+        for j in range(0, n_stat):
+            format = '%10.2f %10.2f '
+            fid.write(format % (imet[j], jmet[j]))
+        fid.write('%s' % '\n')
+        fid.write('%s' % '   npts = ' + str(r) + '\n')
+
+        for i in range(0, r):
+            a0 = (days[i] - daystart) * 24
+            a1 = eta[i]  # light attenuation coefficient
+            a2 = Pa[i]  # Atmospheric pressure
+            format = '%10.4f %10.4f %10.3f '
+            fid.write(format % (a0, a1, a2))
+            for sta in range(0, n_stat):
+                format = '%10.4f %10.4f %10.4f %10.4f %10.4f %10.4f '
+                a3 = Hswn[i]  # Penetrative component of heat flux (albedo already taken into account)
+                a4 = Ta[i, sta]  # Air temperature
+                a5 = RH[i, sta]  # relative humidty (fraction)
+                a6 = Cl[i, sta]  # **** Cloud cover
+                a7 = u[i, sta]  # **** Wind speed in the EW direction
+                a8 = v[i, sta]  # **** Wind speed in the NS direction
+                fid.write(format % (a3, a4, a5, a6, a7, a8))
+            fid.write('%s' % '\n')
 
     elif surfbcType == 11:
-        print('UNDER DEVELOPMENT, THIS FUNCTION DOES NOT WORK')
-        print('The file has not been created')
-        exit()
+        n_stat = kw['n_stat']
+        fid.write('%s\n' % '   Time in   // Data format is (10X,G11.2,...) Time attc Hsw Ta Pa hr cc cw ua va')
+        fid.write('%s' % '   ' + str(dt) + '-min    // SOURCE = ' + LakeName + ' Met Data ' + str(year) + '\n')
+        fid.write('%s' % ' intervals  (Note : file prepared on ' + str(Dt.date.today()) + '\n')
+        fid.write('%s' % ' No. Stats ' + str(n_stat) + '\n')
+        fid.write('%s ' % ' Grid Locs')
+        eta = kw['eta']
+        Hswn = kw['Hswn']
+        Ta = kw['Ta']
+        Pa = kw['Pa']
+        RH = kw['RH'] / 100
+        Hlwin = kw['Hlwin']
+        u = kw['u']
+        v = kw['v']
+        TimeSim = kw['t_Sim']
+        imet = kw['imet']
+        jmet = kw['jmet']
+
+        for j in range(0, n_stat):
+            format = '%10.2f %10.2f '
+            fid.write(format % (imet[j], jmet[j]))
+        fid.write('%s' % '\n')
+        fid.write('%s' % '   npts = ' + str(r) + '\n')
+
+        for i in range(0, r):
+            a0 = (days[i] - daystart) * 24
+            a1 = eta[i]  # light attenuation coefficient
+            a2 = Pa[i]  # Atmospheric pressure
+            format = '%10.4f %10.4f %10.3f '
+            fid.write(format % (a0, a1, a2))
+            for sta in range(0, n_stat):
+                format = '%10.4f %10.4f %10.4f %10.4f %10.4f %10.4f '
+                a3 = Hswn[i]  # Penetrative component of heat flux (albedo already taken into account)
+                a4 = Ta[i, sta]  # Air temperature
+                a5 = RH[i, sta]  # relative humidty (fraction)
+                a6 = Hlwin[i, sta]  # **** Cloud cover
+                a7 = u[i, sta]  # **** Wind speed in the EW direction
+                a8 = v[i, sta]  # **** Wind speed in the NS direction
+                fid.write(format % (a3, a4, a5, a6, a7, a8))
+            fid.write('%s' % '\n')
 
     elif surfbcType == 20:
         fid.write('%s\n' % '   Time in   // Data format is (10X,G11.2,...) Time cw ua va')
@@ -283,9 +357,9 @@ def surfbc4si3d(show, LakeName, surfbcType, days, hr, mins, year, dt, PathSave, 
         fid.write('%s' % ' intervals  (Note : file prepared on ' + str(Dt.date.today()) + '\n')
         fid.write('%s' % '   npts = ' + str(r) + '\n')
 
-        cw = args[0]
-        u = args[1]
-        v = args[2]
+        cw = kw['cw']
+        u = kw['u']
+        v = kw['v']
         for i in range(0, r):
             a0 = (days[i] - daystart) * 24
             a1 = cw[i]  # **** Wind drag coefficient
