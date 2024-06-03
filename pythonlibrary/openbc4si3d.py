@@ -3,11 +3,8 @@
 # UC Davis - TERC
 # February 2023
 """
-import sys
 import os
 import numpy as np
-import matplotlib.pyplot as plt
-import datetime as Dt
 
 
 def openbc4si3d(idx, simStartDate, t, in_out, bc_type, pathSave, LakeName, **kw):
@@ -58,12 +55,12 @@ def openbc4si3d(idx, simStartDate, t, in_out, bc_type, pathSave, LakeName, **kw)
         if bc_type == 1:
             fid.write('%s\n' % '(1) Time [hrs],  (2) wse [m],  (3) T [oC],  (4...) Tracers ')
             v2 = kw['wse']
-            v3 = -20.00 * np.ones((r,1))
+            v3 = -0.01 * np.ones((r, 1))
 
         elif bc_type == 2:
             fid.write('%s\n' % '(1) Time [hrs],  (2) Qout [m3/s],  (3) T [oC],  (4...) Tracers ')
             v2 = kw['Qout']
-            v3 = -20.00 * np.ones((r,1))
+            v3 = -0.01 * np.ones((r, 1))
 
         elif bc_type == 3:
             print('UNDER DEVELOPMENT. FUNCTION NOT WORKING AT THE MOMENT. PLEASE USE 1 OR 2')
@@ -80,15 +77,14 @@ def openbc4si3d(idx, simStartDate, t, in_out, bc_type, pathSave, LakeName, **kw)
         if in_out == 1:
             v4 = kw['concTr']
         elif in_out == 0:
-            v4 = -20.00 * np.ones((rows,nTracer))
-        print(v4)
-        for i in range(0,r):
+            v4 = -0.01 * np.ones((rows, nTracer))
+        for i in range(0, r):
             fid.write('%10.4f %10.4f %10.4f' % (t[i], v2[i], v3[i]))
-            for j in range(0,nTracer):
-                fid.write('%10.4f' % v4[i,j])
+            for j in range(0, nTracer):
+                fid.write('%10.4f' % v4[i, j])
             fid.write('\n')
     else:
-        for i in range(0,r):
+        for i in range(0, r):
             fid.write('%10.4f %10.4f %10.4f' % (t[i], v2[i], v3[i]))
             fid.write('\n')
 
