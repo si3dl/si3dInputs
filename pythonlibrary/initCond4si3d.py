@@ -38,25 +38,25 @@ def initCond4si3d(LakeName, SimStartDate, DeltaZ, TempProf, PathSave, NTracers, 
     :return:
     """
 
-    if DeltaZ == 'constant':
-        if TempProf == 'constant':
+    if DeltaZ:
+        if TempProf:
             z = np.arange(0 + kw['dz'] / 2, kw['H'], kw['dz'])
             T = kw['Tc'] * np.ones(len(z))
             z *= -1
             dummy2 = 'Source: From constant values                     - '
-        elif TempProf == 'variable':
+        else:
             z = np.arange(0 + kw['dz'] / 2, kw['H'] + kw['dz'], kw['dz'])
             T = np.interp(z, kw['z_CTD'], kw['T_CTD'])
             z *= -1
             dummy2 = 'Source: From CTD_Profile                         - '
         dummy1 = 'Depths (m) not used   Temp (oC)                  - '
         if NTracers != 0:
-            dummy1 = 'Depths (m) not used   Temp (oC)   Tracers (g/L) --> - '
-    elif DeltaZ == 'variable':
+            dummy1 = 'Depths (m) not used   Temp (oC)  WQ / Tracers (M/V)  --> - '
+    else:
         # Length of initial grid for creating the unevenly spaced grid
         N = 1000
         gridks = np.arange(1, N + 1, 1)
-        if TempProf == 'constant':
+        if TempProf:
             if kw['spacingMethod'] == 'exp':
                 gridDZ = kw['dz0s'] * kw['dzxs'] ** gridks
                 gridZ = np.cumsum(gridDZ)
@@ -119,7 +119,7 @@ def initCond4si3d(LakeName, SimStartDate, DeltaZ, TempProf, PathSave, NTracers, 
                 z = zi
             T = kw['Tc'] * np.ones(len(z))
             dummy2 = 'Source: From constant values                     - '
-        elif TempProf == 'variable':
+        else:
             if kw['spacingMethod'] == 'exp':
                 gridDZ = kw['dz0s'] * kw['dzxs'] ** gridks
                 gridZ = np.cumsum(gridDZ)
@@ -192,7 +192,7 @@ def initCond4si3d(LakeName, SimStartDate, DeltaZ, TempProf, PathSave, NTracers, 
 
     dummy3 = '         z          T'
     if NTracers != 0:
-        dummy1 = 'Depths (m)   Temp (oC)   Tracers (g/L) -->       - '
+        dummy1 = 'Depths (m)   Temp (oC)   WQ / Tracers (M/V)  --> -  '
         # To create array of header names for z, T, and constituents
         name_Tr = kw['name_Tr']
         for i in range(0, len(name_Tr)):

@@ -342,7 +342,7 @@ def surfbc4si3d(show, LakeName, surfbcType, days, hr, mins, year, dt, PathSave, 
             fid.write(format % (a0, a1, a2))
             for sta in range(0, n_stat):
                 format = '%10.4f %10.4f %10.4f %10.4f %10.4f %10.4f '
-                a3 = Hswn[i]  # Penetrative component of heat flux (albedo already taken into account)
+                a3 = Hswn[i, sta]  # Penetrative component of heat flux (albedo already taken into account)
                 a4 = Ta[i, sta]  # Air temperature
                 a5 = RH[i, sta]  # relative humidty (fraction)
                 a6 = Hlwin[i, sta]  # **** Cloud cover
