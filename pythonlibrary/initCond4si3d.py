@@ -51,7 +51,7 @@ def initCond4si3d(LakeName, SimStartDate, DeltaZ, TempProf, PathSave, NTracers, 
             dummy2 = 'Source: From CTD_Profile                         - '
         dummy1 = 'Depths (m) not used   Temp (oC)                  - '
         if NTracers != 0:
-            dummy1 = 'Depths (m) not used   Temp (oC)  WQ / Tracers (M/V)  --> - '
+            dummy1 = 'Depths (m) not used;  Temp (oC);  WQ [mg/m3], SS [mg/m3], Hg [ng/m3], Tracers (M/V) --> - '
     else:
         # Length of initial grid for creating the unevenly spaced grid
         N = 1000
@@ -192,7 +192,7 @@ def initCond4si3d(LakeName, SimStartDate, DeltaZ, TempProf, PathSave, NTracers, 
 
     dummy3 = '         z          T'
     if NTracers != 0:
-        dummy1 = 'Depths (m)   Temp (oC)   WQ / Tracers (M/V)  --> -  '
+        dummy1 = 'Depths (m) not used;  Temp (oC);  WQ [mg/m3], SS [mg/m3], Hg [ng/m3], Tracers (M/V) --> - '
         # To create array of header names for z, T, and constituents
         name_Tr = kw['name_Tr']
         for i in range(0, len(name_Tr)):
