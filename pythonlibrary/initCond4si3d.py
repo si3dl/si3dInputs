@@ -117,7 +117,7 @@ def initCond4si3d(LakeName, SimStartDate, DeltaZ, TempProf, PathSave, NTracers, 
                 zz[0] = 0
                 zi = -(zz[0:-1] + zz[1:]) / 2
                 z = zi
-            T = kw['Tc'] * np.ones(len(z))
+            T = np.interp(z, kw['z_CTD'], kw['T_CTD'])
             dummy2 = 'Source: From constant values                     - '
         else:
             if kw['spacingMethod'] == 'exp':
